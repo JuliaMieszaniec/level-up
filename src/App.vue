@@ -1,30 +1,37 @@
 <template>
-  <div id="app">
-    <TopBar :user="user" />
+  <div class="app bg-dark text-light min-vh-100">
+    <!-- Pasek nawigacyjny tylko dla zalogowanych -->
+    <Navbar v-if="isLoggedIn" />
+    
+    <!-- Główna treść strony -->
     <router-view />
   </div>
 </template>
 
-<script>
-import TopBar from './components/TopBar.vue'
+<script setup>
+import { ref, onMounted } from 'vue'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './firebase'
+import Navbar from './components/Navbar.vue' // Twój pasek nawigacyjny
 
-export default {
-  components: {
-    TopBar
-  },
-  data() {
-    return {
-      user: {
-        name: 'Wiktoria',
-        avatarUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpl-pl.facebook.com%2FGrajmywgry.1%2F&psig=AOvVaw0UfwzTuMnig0NGA3aWZvFD&ust=1754051689868000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNil9fCN544DFQAAAAAdAAAAABAE',
-        level: 4,
-        xp: 950,
-        badges: [
-          { id: 'early-bird', name: 'Wcześniak', icon: '/badges/early.png' },
-          { id: 'leader', name: 'Liderka', icon: '/badges/leader.png' }
-        ]
-      }
-    }
-  }
-}
+const isLoggedIn = ref(false)
+
+// Nasłuchuj zmian w logowaniu
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    isLoggedIn.value = !!user
+  })
+})
 </script>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+}
+
+.app {
+  min-height: 100vh;
+}
+</style>
