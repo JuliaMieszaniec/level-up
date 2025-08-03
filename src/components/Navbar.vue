@@ -1,8 +1,11 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-transparent shadow-sm px-4 py-2 border-bottom border-secondary">
     <div class="container-fluid d-flex justify-content-between align-items-center">
+      
       <!-- Nazwa aplikacji -->
-      <div class="navbar-brand text-gradient fs-4 fw-bold">LevelUp</div>
+      <RouterLink to="/dashboard" class="navbar-brand text-gradient fs-4 fw-bold">
+        LevelUp
+      </RouterLink>
 
       <!-- Przyciski nawigacyjne -->
       <div class="d-flex gap-3 align-items-center">
@@ -26,12 +29,17 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+
 const router = useRouter()
 const { logoutUser, user } = useAuth()
 
 const logout = async () => {
-  await logoutUser()
-  router.push('/login')
+  try {
+    await logoutUser()
+    router.push('/login')
+  } catch (error) {
+    console.error('Błąd podczas wylogowywania:', error)
+  }
 }
 </script>
 

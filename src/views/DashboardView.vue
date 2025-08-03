@@ -5,28 +5,28 @@
       <div class="col-md-4">
         <StatCard
           title="Twój poziom"
-          :value="`Poziom ${user.level}`"
-          :description="`${user.xp} / ${xpToNextLevel} XP`"
+          :value="`Poziom ${level}`"
+          :description="user ? `${user.xp} / ${xpToNextLevel} XP` : 'Ładowanie...'"
           icon="🧫"
-          :progress="(user.xp / xpToNextLevel) * 100"
+          :progress="progressPercent"
         />
       </div>
       <div class="col-md-4">
         <StatCard
           title="Umiejętności zdobyte"
-          :value="user.skills.length"
+          :value="user?.skills?.length || 0"
           description="W tym roku"
           icon="🧠"
-          :progress="(user.skills.length / 10) * 100"
+          :progress="user?.skills ? (user.skills.length / 10) * 100 : 0"
         />
       </div>
       <div class="col-md-4">
         <StatCard
           title="Cele zrealizowane"
-          :value="user.goalsCompleted"
+          :value="user?.skills?.length || 0"
           description="W tym roku"
           icon="🎯"
-          :progress="(user.goalsCompleted / 5) * 100"
+          :progress="user?.skills ? (user.skills.length / 10) * 100 : 0"
         />
       </div>
     </div>
@@ -74,20 +74,36 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { auth, db } from '@/firebase'
+import { doc, getDoc } from 'firebase/firestore'
 import StatCard from '@/components/StatCard.vue'
 import DashboardTile from '@/components/DashboardTile.vue'
 import TaskListView from '@/views/TaskView.vue'
 
 const currentTab = ref('Aktualności')
 
-const user = {
-  level: 3,
-  xp: 750,
-  skills: ['Prezentacje', 'Wystąpienia publiczne'],
-  goalsCompleted: 2
-}
-const xpToNextLevel = 1000
+const user = ref(null) // najpierw null, bo dane z Firestore
+
+const xpPerLevel = 1000
+
+const level = computed(() => {
+  if (!user.value) return 1
+  return Math.floor(user.value.xp / xpPerLevel) + 1
+})
+
+const xpToNextLevel = computed(() => {
+  if (!user.value) return xpPerLevel
+  return level.value * xpPerLevel
+})
+
+const progressPercent = computed(() => {
+  if (!user.value) return 0
+  const currentXpInLevel = user.value.xp - (level.value - 1) * xpPerLevel
+  return (currentXpInLevel / xpPerLevel) * 100
+})
+
+
 
 const tasks = [
   { id: '1', title: 'Stwórz grafikę do posta' },
@@ -104,6 +120,23 @@ const posts = [
   { id: 'p2', title: 'Wprowadzenie do XP' },
   { id: 'p3', title: 'Levelowanie – jak zdobywać punkty' }
 ]
+
+const fetchUserData = async () => {
+  const currentUser = auth.currentUser
+  if (!currentUser) return
+
+  const userRef = doc(db, 'users', currentUser.uid)
+  const userSnap = await getDoc(userRef)
+  if (userSnap.exists()) {
+    user.value = userSnap.data()
+  }
+}
+
+onMounted(() => {
+  fetchUserData()
+  // tu możesz też odpalić pobieranie tasks/events/posts jeśli chcesz
+})
+
 </script>
 
 <style scoped>
