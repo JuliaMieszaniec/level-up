@@ -1,77 +1,54 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-black px-3 shadow-sm">
-      <div class="container-fluid">
-        <router-link class="navbar-brand fw-bold text-success" to="/dashboard">LevelUp</router-link>
-  
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent shadow-sm px-4 py-2 border-bottom border-secondary">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <!-- Nazwa aplikacji -->
+      <div class="navbar-brand text-gradient fs-4 fw-bold">LevelUp</div>
+
+      <!-- Przyciski nawigacyjne -->
+      <div class="d-flex gap-3 align-items-center">
+        <RouterLink to="/dashboard" class="nav-link">Panel główny</RouterLink>
+        <RouterLink to="/team" class="nav-link">Zespół</RouterLink>
+        <RouterLink to="/knowledge" class="nav-link">Baza wiedzy</RouterLink>
+        <RouterLink to="/profile" class="nav-link">Profil</RouterLink>
+        <RouterLink
+          v-if="user?.role === 'admin'"
+          to="/admin"
+          class="nav-link"
         >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-  
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/tasks">Zadania</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/team">Zespół</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/ranking">Ranking</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/knowledge">Baza wiedzy</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/profile">Profil</router-link>
-            </li>
-          </ul>
-  
-          <button class="btn btn-outline-danger btn-sm" @click="logout">
-            Wyloguj się
-          </button>
-        </div>
+          Zarządzanie
+        </RouterLink>
+        <button @click="logout" class="btn btn-sm btn-outline-light">Wyloguj się</button>
       </div>
-    </nav>
-  </template>
-  
-  <script setup>
-  import { useRouter } from 'vue-router'
-  import { signOut } from 'firebase/auth'
-  import { auth } from '../firebase'
-  
-  const router = useRouter()
-  
-  const logout = async () => {
-    await signOut(auth)
-    router.push('/login')
-  }
-  </script>
-  
-  <style scoped>
-  .navbar {
-    font-size: 1rem;
-    border-bottom: 1px solid #222;
-  }
-  
-  .nav-link {
-    transition: 0.2s;
-  }
-  .nav-link:hover {
-    color: #00ffae !important;
-  }
-  
-  .navbar-brand {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-  }
-  </style>
-  
+    </div>
+  </nav>
+</template>
+
+<script setup>
+import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth'
+const router = useRouter()
+const { logoutUser, user } = useAuth()
+
+const logout = async () => {
+  await logoutUser()
+  router.push('/login')
+}
+</script>
+
+<style scoped>
+.navbar-brand.text-gradient {
+  background: linear-gradient(to right, #9f6eff, #b983ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+  color: #ddd;
+  transition: 0.2s;
+}
+.nav-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+</style>
