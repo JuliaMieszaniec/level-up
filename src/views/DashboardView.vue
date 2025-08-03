@@ -76,7 +76,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { auth, db } from '@/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, onSnapshot, getDoc } from 'firebase/firestore'
 import StatCard from '@/components/StatCard.vue'
 import DashboardTile from '@/components/DashboardTile.vue'
 import TaskListView from '@/views/TaskView.vue'
@@ -121,21 +121,24 @@ const posts = [
   { id: 'p3', title: 'Levelowanie – jak zdobywać punkty' }
 ]
 
-const fetchUserData = async () => {
-  const currentUser = auth.currentUser
-  if (!currentUser) return
+const fetchUserDataLive = () => {
+  const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    if (!currentUser) return
 
-  const userRef = doc(db, 'users', currentUser.uid)
-  const userSnap = await getDoc(userRef)
-  if (userSnap.exists()) {
-    user.value = userSnap.data()
-  }
+    const userRef = doc(db, 'users', currentUser.uid)
+    onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        user.value = docSnap.data()
+      }
+    })
+  })
 }
 
+
 onMounted(() => {
-  fetchUserData()
-  // tu możesz też odpalić pobieranie tasks/events/posts jeśli chcesz
+  fetchUserDataLive()
 })
+
 
 </script>
 
