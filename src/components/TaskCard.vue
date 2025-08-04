@@ -3,29 +3,53 @@
     class="task-card rounded-4 p-4 mb-4 text-light position-relative"
     :class="{ done: task.status === 'done' }"
   >
-    <!-- Punkty XP -->
+    <!-- XP -->
     <div class="points-glow position-absolute top-0 end-0 me-3 mt-3 px-3 py-1 rounded-pill text-glow fw-bold">
       💎 {{ task.points }} XP
     </div>
 
-    <!-- Treść zadania -->
+    <!-- Treść -->
     <div class="d-flex justify-content-between align-items-start">
       <div class="flex-grow-1 pe-3">
         <h5 class="fw-bold task-title mb-1">{{ task.title }}</h5>
         <p class="task-desc mb-2">{{ task.description }}</p>
-        <span class="badge bg-purple me-2">{{ task.category }}</span>
+
+        <div class="badges mb-2">
+          <span class="badge bg-purple me-2">📂 {{ task.category }}</span>
+          <span
+            v-if="task.assignedTo?.length"
+            class="badge bg-dark-glow"
+          >
+            👥 {{ task.assignedTo.join(', ') }}
+          </span>
+        </div>
+
+        <!-- Autor przypisania -->
+        <div v-if="task.createdBy && task.createdBy !== currentUserEmail" class="text-light small mt-1">
+          ✍️ Przypisał: {{ task.createdBy }}
+        </div>
       </div>
     </div>
 
-    <!-- Termin i checkbox -->
+    <!-- Termin i akcje -->
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <div class="small text-date">📅 Termin: {{ formattedDate }}</div>
-      <input
-        class="form-check-input"
-        type="checkbox"
-        :checked="task.status === 'done'"
-        @change="$emit('toggle-complete', task.id)"
-      />
+      <div class="text-date small">📅 Termin: {{ formattedDate }}</div>
+
+      <div v-if="canToggle">
+        <label class="form-check-label me-2">✅</label>
+        <input
+          class="form-check-input"
+          type="checkbox"
+          :checked="task.status === 'done'"
+          @change="$emit('toggle-complete', task.id)"
+        />
+      </div>
+
+      <div v-if="canDelete">
+        <button class="btn btn-sm btn-outline-danger" @click="$emit('delete-task', task.id)">
+          🗑 Usuń
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -34,42 +58,41 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  task: {
-    type: Object,
-    required: true,
-  },
+  task: Object,
+  currentUserEmail: String,
+  canToggle: { type: Boolean, default: false },
+  canDelete: { type: Boolean, default: false }
 })
 
 const formattedDate = computed(() => {
   if (!props.task.dueDate) return ''
-  const date = new Date(props.task.dueDate)
-  return date.toLocaleDateString()
+  return new Date(props.task.dueDate).toLocaleDateString()
 })
 </script>
 
 <style scoped>
 .task-card {
-  background: linear-gradient(135deg, #1c1b29, #322c53, #1a1f36);
+  background: linear-gradient(135deg, #1e1b32, #2a2346);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 16px rgba(185, 131, 255, 0.1);
+  box-shadow: 0 0 16px rgba(185, 131, 255, 0.15);
 }
 
 .task-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 20px rgba(185, 131, 255, 0.25);
+  box-shadow: 0 0 22px rgba(185, 131, 255, 0.3);
 }
 
 .task-title {
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .task-desc {
-  color: #dddddd;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  color: #d0cfff;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .text-date {
@@ -80,6 +103,12 @@ const formattedDate = computed(() => {
 .bg-purple {
   background-color: #a579ff;
   color: #fff;
+}
+
+.bg-dark-glow {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .done .task-title,

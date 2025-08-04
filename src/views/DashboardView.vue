@@ -50,21 +50,10 @@
     <!-- Dynamiczna zawartość zakładki -->
     <div class="tab-section p-4 rounded-4 glassy">
       <template v-if="currentTab === 'Aktualności'">
-        <h5 class="section-title">📌 Najbliższe zadania</h5>
-        <ul class="neon-list">
-          <li v-for="task in tasks" :key="task.id">{{ task.title }}</li>
-        </ul>
-
-        <h5 class="section-title mt-4">🗕️ Nadchodzące wydarzenia</h5>
-        <ul class="neon-list">
-          <li v-for="event in events" :key="event.id">{{ event.title }}</li>
-        </ul>
-
-        <h5 class="section-title mt-4">📜 Najnowsze wpisy</h5>
-        <ul class="neon-list">
-          <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
-        </ul>
+        <NewsView @navigate="currentTab = $event" />
       </template>
+
+
 
       <TaskListView v-else-if="currentTab === 'Zadania'" />
       <EventView v-else-if="currentTab === 'Wydarzenia'" />
@@ -86,6 +75,8 @@ import DashboardTile from '@/components/DashboardTile.vue'
 import TaskListView from '@/views/TaskView.vue'
 import EventView from '@/views/EventView.vue'
 import PostsView from '@/views/PostsView.vue'
+import NewsView from '@/views/NewsView.vue'
+
 
 
 const currentTab = ref('Aktualności')
