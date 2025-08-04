@@ -68,6 +68,8 @@
 
       <TaskListView v-else-if="currentTab === 'Zadania'" />
       <EventView v-else-if="currentTab === 'Wydarzenia'" />
+      <PostsView v-else-if="currentTab === 'Wpisy'" />
+
 
 
       <p v-else class="text-light">Sekcja „{{ currentTab }}” jeszcze się ładuje lub będzie dostępna wkrótce.</p>
@@ -83,6 +85,8 @@ import StatCard from '@/components/StatCard.vue'
 import DashboardTile from '@/components/DashboardTile.vue'
 import TaskListView from '@/views/TaskView.vue'
 import EventView from '@/views/EventView.vue'
+import PostsView from '@/views/PostsView.vue'
+
 
 const currentTab = ref('Aktualności')
 
