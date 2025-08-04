@@ -67,6 +67,8 @@
       </template>
 
       <TaskListView v-else-if="currentTab === 'Zadania'" />
+      <EventView v-else-if="currentTab === 'Wydarzenia'" />
+
 
       <p v-else class="text-light">Sekcja „{{ currentTab }}” jeszcze się ładuje lub będzie dostępna wkrótce.</p>
     </div>
@@ -80,6 +82,7 @@ import { doc, onSnapshot, getDoc } from 'firebase/firestore'
 import StatCard from '@/components/StatCard.vue'
 import DashboardTile from '@/components/DashboardTile.vue'
 import TaskListView from '@/views/TaskView.vue'
+import EventView from '@/views/EventView.vue'
 
 const currentTab = ref('Aktualności')
 
