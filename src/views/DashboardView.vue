@@ -50,7 +50,7 @@
     <!-- Dynamiczna zawartość zakładki -->
     <div class="tab-section p-4 rounded-4 glassy">
       <template v-if="currentTab === 'Aktualności'">
-        <NewsView @navigate="currentTab = $event" />
+        <NewsView @navigate="handleNavigate" />
       </template>
 
 
@@ -80,6 +80,10 @@ import NewsView from '@/views/NewsView.vue'
 
 
 const currentTab = ref('Aktualności')
+
+function handleNavigate(tabName) {
+  currentTab.value = tabName
+}
 
 const user = ref(null) // najpierw null, bo dane z Firestore
 
@@ -131,6 +135,7 @@ const fetchUserDataLive = () => {
     })
   })
 }
+
 
 
 onMounted(() => {
