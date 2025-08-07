@@ -107,22 +107,6 @@ const progressPercent = computed(() => {
 
 
 
-const tasks = [
-  { id: '1', title: 'Stwórz grafikę do posta' },
-  { id: '2', title: 'Poprowadź szkolenie' },
-  { id: '3', title: 'Przygotuj prezentację' }
-]
-const events = [
-  { id: 'e1', title: 'Hackathon organizacyjny' },
-  { id: 'e2', title: 'Spotkanie liderów' },
-  { id: 'e3', title: 'Wyjazd integracyjny' }
-]
-const posts = [
-  { id: 'p1', title: 'Top 5 narzędzi do pracy w zespole' },
-  { id: 'p2', title: 'Wprowadzenie do XP' },
-  { id: 'p3', title: 'Levelowanie – jak zdobywać punkty' }
-]
-
 const fetchUserDataLive = () => {
   const unsubscribe = auth.onAuthStateChanged((currentUser) => {
     if (!currentUser) return

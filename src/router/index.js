@@ -9,8 +9,7 @@ import TaskView from '../views/TaskView.vue'
 
 // Nowe importy
 import KnowledgeView from '../views/KnowledgeView.vue'
-//import TeamView from '../views/TeamView.vue'
-//import ProfileView from '../views/ProfileView.vue'
+import UserProfileView from '@/views/UserProfileView.vue'
 
 const routes = [
   {
@@ -42,10 +41,10 @@ const routes = [
       //  path: 'team',
       //  component: TeamView
       //},
-      //{
-      //  path: 'profile',
-      //  component: ProfileView
-      //},
+      {
+        path: 'profile',
+        component: UserProfileView
+      },
       {
         path: '',
         redirect: '/dashboard'
