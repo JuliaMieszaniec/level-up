@@ -71,6 +71,8 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
+import { getDoc } from 'firebase/firestore'
+
 
 const posts = ref([])
 const newPost = ref({
@@ -85,14 +87,22 @@ const auth = getAuth()
 const currentUserId = ref(null)
 const currentUserName = ref('')
 
+
 onMounted(async () => {
   const user = auth.currentUser
   if (user) {
     currentUserId.value = user.uid
-    currentUserName.value = user.displayName || 'Anonim'
+    const userDoc = await getDoc(doc(db, 'users', user.uid))
+    if (userDoc.exists()) {
+      const userData = userDoc.data()
+      currentUserName.value = userData.name || 'Anonim'
+    } else {
+      currentUserName.value = 'Anonim'
+    }
   }
   await fetchPosts()
 })
+
 
 const fetchPosts = async () => {
   const querySnapshot = await getDocs(collection(db, 'posts'))
