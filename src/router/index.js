@@ -7,6 +7,11 @@ import AppLayout from '../layouts/AppLayout.vue'
 import DashboardView from '../views/DashboardView.vue'
 import TaskView from '../views/TaskView.vue'
 
+// Nowe importy
+import KnowledgeView from '../views/KnowledgeView.vue'
+//import TeamView from '../views/TeamView.vue'
+//import ProfileView from '../views/ProfileView.vue'
+
 const routes = [
   {
     path: '/login',
@@ -26,16 +31,27 @@ const routes = [
         component: DashboardView
       },
       {
+        path: 'tasks',
+        component: TaskView
+      },
+      {
+        path: 'knowledge',
+        component: KnowledgeView
+      },
+      //{
+      //  path: 'team',
+      //  component: TeamView
+      //},
+      //{
+      //  path: 'profile',
+      //  component: ProfileView
+      //},
+      {
         path: '',
         redirect: '/dashboard'
       }
     ]
-  },
-  {
-    path: '/tasks',
-    component: TaskView,
-    meta: { requiresAuth: true }
-  },
+  }
 ]
 
 const router = createRouter({
