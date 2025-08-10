@@ -7,24 +7,41 @@
         LevelUp
       </RouterLink>
 
-      <!-- Przyciski nawigacyjne -->
-      <div class="d-flex gap-3 align-items-center">
-        <RouterLink to="/dashboard" class="nav-link">Panel główny</RouterLink>
-        <RouterLink to="/team" class="nav-link">Zespół</RouterLink>
-        <RouterLink to="/knowledge" class="nav-link">Baza wiedzy</RouterLink>
-        <RouterLink to="/profile" class="nav-link">Profil</RouterLink>
-        <RouterLink
-          v-if="user?.role === 'admin'"
-          to="/admin"
-          class="nav-link"
-        >
-          Zarządzanie
-        </RouterLink>
-        <button @click="logout" class="btn btn-sm btn-outline-light">Wyloguj się</button>
+      <!-- Przycisk hamburger (toggler) -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Przyciski nawigacyjne w kolapsie -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-nav ms-auto d-flex gap-3 align-items-center">
+          <RouterLink to="/dashboard" class="nav-link">Panel główny</RouterLink>
+          <RouterLink to="/team" class="nav-link">Zespół</RouterLink>
+          <RouterLink to="/knowledge" class="nav-link">Baza wiedzy</RouterLink>
+          <RouterLink to="/ranking" class="nav-link">Ranking</RouterLink>
+          <RouterLink to="/profile" class="nav-link">Profil</RouterLink>
+          <RouterLink
+            v-if="user?.role === 'admin'"
+            to="/admin"
+            class="nav-link"
+          >
+            Zarządzanie
+          </RouterLink>
+          <button @click="logout" class="btn btn-sm btn-outline-light">Wyloguj się</button>
+        </div>
       </div>
     </div>
   </nav>
 </template>
+
 
 <script setup>
 import { useRouter } from 'vue-router'
@@ -58,5 +75,11 @@ const logout = async () => {
 .nav-link:hover {
   color: #fff;
   text-decoration: underline;
+}
+
+/* Opcjonalny lekki efekt rozświetlenia */
+.nav-link,
+.navbar-brand {
+  text-shadow: 0 0 5px rgba(255,255,255,0.3);
 }
 </style>

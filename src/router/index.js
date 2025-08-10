@@ -1,15 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
+// Widoki logowania/rejestracji
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+
+// Layout główny
 import AppLayout from '../layouts/AppLayout.vue'
+
+// Główne widoki
 import DashboardView from '../views/DashboardView.vue'
 import TaskView from '../views/TaskView.vue'
-
-// Nowe importy
 import KnowledgeView from '../views/KnowledgeView.vue'
 import UserProfileView from '@/views/UserProfileView.vue'
+
+// Nowe widoki
+//import TeamView from '@/views/TeamView.vue'
+import RankingView from '@/views/RankingView.vue'
+//import AdminView from '@/views/AdminView.vue'
 
 const routes = [
   {
@@ -42,9 +50,18 @@ const routes = [
       //  component: TeamView
       //},
       {
+        path: 'ranking',
+        component: RankingView
+      },
+      {
         path: 'profile',
         component: UserProfileView
       },
+      //{
+      //  path: 'admin',
+      //  component: AdminView,
+      //  meta: { requiresAdmin: true }
+      //},
       {
         path: '',
         redirect: '/dashboard'
@@ -58,18 +75,22 @@ const router = createRouter({
   routes
 })
 
-// Guard logowania
+// Guard logowania + admin
 router.beforeEach((to, from, next) => {
   const auth = getAuth()
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
 
-  if (requiresAuth) {
+  if (requiresAuth || requiresAdmin) {
     const unsubscribe = onAuthStateChanged(auth, user => {
       unsubscribe()
-      if (user) {
-        next()
-      } else {
+      if (!user) {
         next('/login')
+      } else if (requiresAdmin && user.role !== 'admin') {
+        // brak dostępu dla nie-admina
+        next('/dashboard')
+      } else {
+        next()
       }
     })
   } else {
