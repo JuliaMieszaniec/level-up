@@ -15,7 +15,7 @@ import KnowledgeView from '../views/KnowledgeView.vue'
 import UserProfileView from '@/views/UserProfileView.vue'
 
 // Nowe widoki
-//import TeamView from '@/views/TeamView.vue'
+import TeamView from '@/views/TeamView.vue'
 import RankingView from '@/views/RankingView.vue'
 //import AdminView from '@/views/AdminView.vue'
 
@@ -45,10 +45,10 @@ const routes = [
         path: 'knowledge',
         component: KnowledgeView
       },
-      //{
-      //  path: 'team',
-      //  component: TeamView
-      //},
+      {
+        path: 'team',
+        component: TeamView
+      },
       {
         path: 'ranking',
         component: RankingView
