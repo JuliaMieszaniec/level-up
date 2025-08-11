@@ -83,7 +83,7 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, L
 
 const db = getFirestore()
 const ranking = ref([])
-const defaultAvatar = 'https://via.placeholder.com/40x40.png?text=U'
+const defaultAvatar = 'https://img.freepik.com/darmowe-wektory/awatar-postaci-biznesmen-na-bialym-tle_24877-60111.jpg?t=st=1734351587~exp=1734355187~hmac=7f3f29198ca151a6f1daece81575d4925299ba4e8e85296b61ff94e54bc5d49b'
 
 const xpChart = ref(null)
 const levelChart = ref(null)
@@ -116,7 +116,7 @@ const renderXpChart = () => {
   xpChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: top5.map(u => u.nickname || 'Anonim'),
+      labels: top5.map(u => u.name || 'Anonim'),
       datasets: [{
         label: 'XP',
         data: top5.map(u => u.xp),
@@ -181,7 +181,7 @@ const renderLevelChart = () => {
   levelChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: top5.map(u => u.nickname || 'Anonim'),
+      labels: top5.map(u => u.name || 'Anonim'),
       datasets: [{
         label: 'Poziom',
         data: top5.map(u => getLevel(u.xp)),

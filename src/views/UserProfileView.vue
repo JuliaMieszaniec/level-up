@@ -112,7 +112,7 @@ const user = ref({
 })
 
 const activity = ref([])
-const defaultAvatar = '/avatar-placeholder.png'
+const defaultAvatar = 'https://img.freepik.com/darmowe-wektory/awatar-postaci-biznesmen-na-bialym-tle_24877-60111.jpg?t=st=1734351587~exp=1734355187~hmac=7f3f29198ca151a6f1daece81575d4925299ba4e8e85296b61ff94e54bc5d49b'
 
 const level = computed(() => Math.floor(user.value.xp / 1000) + 1)
 const xpToNextLevel = computed(() => level.value * 1000)
