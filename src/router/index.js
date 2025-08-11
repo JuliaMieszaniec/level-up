@@ -16,6 +16,7 @@ import UserProfileView from '@/views/UserProfileView.vue'
 
 // Nowe widoki
 import TeamView from '@/views/TeamView.vue'
+import TeamDetailsView from '@/views/TeamDetailsView.vue'  // dodaj import
 import RankingView from '@/views/RankingView.vue'
 //import AdminView from '@/views/AdminView.vue'
 
@@ -50,6 +51,11 @@ const routes = [
         component: TeamView
       },
       {
+        path: 'team/:id',      // <--- nowa trasa ze zmiennym parametrem
+        component: TeamDetailsView,
+        props: true               // aby przekazać teamId jako prop do komponentu
+      },
+      {
         path: 'ranking',
         component: RankingView
       },
@@ -57,11 +63,11 @@ const routes = [
         path: 'profile',
         component: UserProfileView
       },
-      //{
-      //  path: 'admin',
-      //  component: AdminView,
-      //  meta: { requiresAdmin: true }
-      //},
+      // {
+      //   path: 'admin',
+      //   component: AdminView,
+      //   meta: { requiresAdmin: true }
+      // },
       {
         path: '',
         redirect: '/dashboard'

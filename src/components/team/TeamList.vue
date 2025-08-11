@@ -1,78 +1,86 @@
 <template>
   <div class="team-list">
-    <div 
-      v-for="team in teams" 
-      :key="team.id" 
-      class="team-card glassy p-3 mb-4 rounded shadow"
-    >
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 class="team-name neon-text mb-0">{{ team.name }}</h3>
-        <small class="text-muted fst-italic">
-          Właściciel: {{ team.ownerEmail }}
-        </small>
-      </div>
-
-      <!-- Członkowie -->
-      <div class="mb-3">
-        <h5 class="mb-2">Członkowie ({{ team.members.length }})</h5>
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-          <div 
-            v-for="member in team.members" 
-            :key="member" 
-            class="member-item d-flex align-items-center gap-2 px-2 py-1 rounded"
-            :class="{ 'owner': member === team.ownerEmail }"
-          >
-            <div class="avatar-placeholder" :title="member">
-              {{ getInitials(member) }}
-            </div>
-            <span>{{ member }}</span>
-
-            <!-- Usuwanie członka, tylko właściciel i nie siebie -->
-            <button
-              v-if="isOwner(team) && member !== currentUserEmail"
-              class="btn btn-sm btn-outline-danger ms-2"
-              @click="removeMember(team.id, member)"
-              title="Usuń członka"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dodawanie członka, tylko właściciel -->
-      <form
-        v-if="isOwner(team)"
-        @submit.prevent="addMember(team.id)"
-        class="d-flex gap-2 align-items-center flex-wrap"
-      >
-        <input
-          v-model="newMemberEmail[team.id]"
-          type="email"
-          placeholder="Dodaj członka (email)"
-          class="form-control form-control-sm"
-          :disabled="addingMember[team.id]"
-          required
-        />
-        <button
-          type="submit"
-          class="btn btn-sm btn-glow"
-          :disabled="addingMember[team.id]"
+    <RouterLink
+        v-for="team in teams"
+        :key="team.id"
+        :to="`/team/${team.id}`"
+        class="team-card-link text-decoration-none"
+        custom
+        v-slot="{ navigate, isActive }"
         >
-          {{ addingMember[team.id] ? 'Dodaję...' : 'Dodaj' }}
-        </button>
-      </form>
+        <div
+            class="team-card glassy p-3 mb-4 rounded shadow"
+            :class="{ active: isActive }"
+            @click="() => { console.log('Kliknięto kartę', team.id); navigate(); }"
+        >
+            <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="team-name neon-text mb-0">{{ team.name }}</h3>
+            <small class="text-muted fst-italic">Właściciel: {{ team.ownerEmail }}</small>
+            </div>
 
-      <!-- Błędy dla tego zespołu -->
-      <div v-if="errorMessages[team.id]" class="text-danger mt-2">
-        {{ errorMessages[team.id] }}
-      </div>
-    </div>
+            <!-- Członkowie -->
+            <div class="mb-3">
+            <h5 class="mb-2">Członkowie ({{ team.members.length }})</h5>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <div
+                v-for="member in team.members"
+                :key="member"
+                class="member-item d-flex align-items-center gap-2 px-2 py-1 rounded"
+                :class="{ owner: member === team.ownerEmail }"
+                >
+                <div class="avatar-placeholder" :title="member">
+                    {{ getInitials(member) }}
+                </div>
+                <span>{{ member }}</span>
+
+                <!-- Usuwanie członka, tylko właściciel i nie siebie -->
+                <button
+                    v-if="isOwner(team) && member !== currentUserEmail"
+                    class="btn btn-sm btn-outline-danger ms-2"
+                    @click.stop.prevent="removeMember(team.id, member)"
+                    title="Usuń członka"
+                >
+                    &times;
+                </button>
+                </div>
+            </div>
+            </div>
+
+            <!-- Dodawanie członka, tylko właściciel -->
+            <form
+            v-if="isOwner(team)"
+            @submit.prevent.stop="addMember(team.id)"
+            class="d-flex gap-2 align-items-center flex-wrap"
+            >
+            <input
+                v-model="newMemberEmail[team.id]"
+                type="email"
+                placeholder="Dodaj członka (email)"
+                class="form-control form-control-sm"
+                :disabled="addingMember[team.id]"
+                required
+            />
+            <button
+                type="submit"
+                class="btn btn-sm btn-glow"
+                :disabled="addingMember[team.id]"
+            >
+                {{ addingMember[team.id] ? 'Dodaję...' : 'Dodaj' }}
+            </button>
+            </form>
+
+            <!-- Błędy dla tego zespołu -->
+            <div v-if="errorMessages[team.id]" class="text-danger mt-2">
+            {{ errorMessages[team.id] }}
+            </div>
+        </div>
+        </RouterLink>
+
   </div>
 </template>
 
 <script setup>
-import { reactive, toRefs } from 'vue'
+import { reactive } from 'vue'
 import { doc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { useAuth } from '@/composables/useAuth'
@@ -97,7 +105,6 @@ const errorMessages = reactive({})
 const isOwner = (team) => team.ownerEmail === props.currentUserEmail
 
 const getInitials = (email) => {
-  // Wyciąga inicjały z emaila: np. john.doe@example.com -> JD
   const namePart = email.split('@')[0]
   const parts = namePart.split(/[._]/)
   return parts.map(p => p[0]?.toUpperCase() || '').join('').slice(0, 2)
@@ -162,10 +169,15 @@ const removeMember = async (teamId, memberEmail) => {
   padding: 1rem 1.5rem;
   box-shadow: 0 0 10px #b983ff55;
   transition: box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .team-card:hover {
   box-shadow: 0 0 20px #b983ffbb;
+}
+
+.team-card.active {
+  box-shadow: 0 0 25px #b983fff0;
 }
 
 .neon-text {
