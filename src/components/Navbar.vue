@@ -20,7 +20,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Przyciski nawigacyjne w kolapsie -->
+      <!-- Linki nawigacyjne -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <div class="navbar-nav ms-auto d-flex gap-3 align-items-center">
           <RouterLink to="/dashboard" class="nav-link">Panel główny</RouterLink>
@@ -28,13 +28,16 @@
           <RouterLink to="/knowledge" class="nav-link">Baza wiedzy</RouterLink>
           <RouterLink to="/ranking" class="nav-link">Ranking</RouterLink>
           <RouterLink to="/profile" class="nav-link">Profil</RouterLink>
+          
+          <!-- Link do panelu admina widoczny tylko dla admina lub konkretnego e-maila -->
           <RouterLink
-            v-if="user?.role === 'admin'"
+            v-if="canAccessAdmin"
             to="/admin"
             class="nav-link"
           >
-            Zarządzanie
+            Panel administratora
           </RouterLink>
+
           <button @click="logout" class="btn btn-sm btn-outline-light">Wyloguj się</button>
         </div>
       </div>
@@ -42,13 +45,19 @@
   </nav>
 </template>
 
-
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
+import { computed } from 'vue'
 
 const router = useRouter()
 const { logoutUser, user } = useAuth()
+
+// Sprawdzenie czy użytkownik może wejść do panelu admina
+const canAccessAdmin = computed(() => {
+  if (!user.value) return false
+  return user.value.role === 'admin' || user.value.email === 'abcd@gmail.com'
+})
 
 const logout = async () => {
   try {
@@ -77,7 +86,6 @@ const logout = async () => {
   text-decoration: underline;
 }
 
-/* Opcjonalny lekki efekt rozświetlenia */
 .nav-link,
 .navbar-brand {
   text-shadow: 0 0 5px rgba(255,255,255,0.3);

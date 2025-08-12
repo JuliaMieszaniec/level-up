@@ -110,12 +110,12 @@ watch(user, (newUser) => {
 
 <style scoped>
 .team-view {
-  color: #eee;
+  
   background: linear-gradient(135deg, #14111c, #1d1530);
   border-radius: 16px;
   padding: 1.5rem 2rem;
   min-height: 80vh;
-  box-shadow: 0 0 10px #b983ff44;
+  
   animation: fadeIn 0.5s ease forwards;
 }
 
