@@ -1,75 +1,81 @@
 <template>
-  <div class="ranking-container container py-4">
-    <h1 class="text-center mb-4 neon-text fw-bold display-4">
+  <div class="ranking-container container py-3 py-md-4">
+    <h1 class="text-center mb-3 mb-md-4 neon-text fw-bold display-5 display-md-4">
       🏆 Ranking Graczy
     </h1>
 
-    
-
     <!-- Tabela rankingu -->
-    <div class="ranking-table shadow-lg p-4 rounded mb-4 glassy">
-      <table class="table table-dark table-hover align-middle">
-        <thead>
-          <tr>
-            <th>Miejsce</th>
-            <th>Gracz</th>
-            <th>XP</th>
-            <th>Poziom</th>
-            <th>Postęp</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(user, index) in ranking"
-            :key="user.id"
-            :class="{ 'top-user': index < 3 }"
-            class="fade-in-up"
-            :style="{ animationDelay: `${index * 0.1}s` }"
-          >
-            <td class="fw-bold place-cell">
-              <span v-if="index === 0" class="crown">👑</span>
-              <span v-else-if="index === 1" class="silver-medal">🥈</span>
-              <span v-else-if="index === 2" class="bronze-medal">🥉</span>
-              {{ index + 1 }}
-            </td>
-            <td>
-              <div class="d-flex align-items-center">
-                <img
-                  :src="user.avatarUrl || defaultAvatar"
-                  alt="avatar"
-                  class="rounded-circle me-2 border border-light avatar"
-                />
-                <div>
-                  <div class="fw-bold neon-text">{{ user.name || 'Anonim' }}</div>
-                  <small class="text-muted">{{ user.name || '' }}</small>
+    <div class="ranking-table shadow-lg p-3 p-md-4 rounded mb-3 mb-md-4 glassy">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="text-nowrap">Miejsce</th>
+              <th>Gracz</th>
+              <th class="text-nowrap">XP</th>
+              <th class="text-nowrap">Poziom</th>
+              <th class="text-nowrap">Postęp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(user, index) in ranking"
+              :key="user.id"
+              :class="{ 'top-user': index < 3 }"
+              class="fade-in-up"
+              :style="{ animationDelay: `${index * 0.1}s` }"
+            >
+              <td class="fw-bold place-cell text-nowrap">
+                <span v-if="index === 0" class="crown">👑</span>
+                <span v-else-if="index === 1" class="silver-medal">🥈</span>
+                <span v-else-if="index === 2" class="bronze-medal">🥉</span>
+                {{ index + 1 }}
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img
+                    :src="user.avatarUrl || defaultAvatar"
+                    alt="avatar"
+                    class="rounded-circle me-2 border border-light avatar"
+                  />
+                  <div class="text-truncate">
+                    <div class="fw-bold neon-text text-truncate">{{ user.name || 'Anonim' }}</div>
+                    <small class="text-muted text-truncate">{{ user.name || '' }}</small>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td class="fw-bold text-info">{{ user.xp }}</td>
-            <td class="fw-bold text-warning">{{ getLevel(user.xp) }}</td>
-            <td style="width: 220px">
-              <div class="progress bg-secondary rounded-pill" style="height: 14px;">
-                <div
-                  class="progress-bar progress-glow rounded-pill"
-                  role="progressbar"
-                  :style="{ width: getProgress(user.xp) + '%' }"
-                ></div>
-              </div>
-              <small class="text-muted ms-2">{{ getProgress(user.xp) }}%</small>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+              <td class="fw-bold text-info text-nowrap">{{ user.xp }}</td>
+              <td class="fw-bold text-warning text-nowrap">{{ getLevel(user.xp) }}</td>
+              <td>
+                <div class="d-flex flex-column flex-md-row align-items-center">
+                  <div class="progress bg-secondary rounded-pill me-0 me-md-2 mb-1 mb-md-0" style="height: 14px; min-width: 120px;">
+                    <div
+                      class="progress-bar progress-glow rounded-pill"
+                      role="progressbar"
+                      :style="{ width: getProgress(user.xp) + '%' }"
+                    ></div>
+                  </div>
+                  <small class="text-muted text-nowrap">{{ getProgress(user.xp) }}%</small>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Wykres XP TOP 5 -->
-    <div class="chart-card mb-4 p-4 rounded shadow-lg glassy">
-      <canvas ref="xpChart" class="chart-canvas"></canvas>
-    </div>
-
-    <!-- Drugi wykres - Poziomy TOP 5 -->
-    <div class="chart-card p-4 rounded shadow-lg glassy">
-      <canvas ref="levelChart" class="chart-canvas"></canvas>
+    <!-- Wykresy w układzie kolumnowym na mobile -->
+    <div class="row g-3">
+      <div class="col-12 col-lg-6">
+        <div class="chart-card mb-3 mb-md-4 p-3 p-md-4 rounded shadow-lg glassy">
+          <canvas ref="xpChart" class="chart-canvas"></canvas>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="chart-card p-3 p-md-4 rounded shadow-lg glassy">
+          <canvas ref="levelChart" class="chart-canvas"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -290,6 +296,7 @@ watch(ranking, () => {
   background: rgba(25, 19, 46, 0.95);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(185, 131, 255, 0.3);
+  overflow: hidden;
 }
 
 /* Najlepsi użytkownicy - podświetlenie */
@@ -308,7 +315,7 @@ watch(ranking, () => {
 /* Specjalne ikony */
 .place-cell {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .crown {
@@ -332,8 +339,8 @@ watch(ranking, () => {
 
 /* Avatar w tabeli */
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border: 2px solid #b983ff;
   box-shadow: 0 0 8px #b983ff;
@@ -376,5 +383,26 @@ watch(ranking, () => {
   box-shadow: 0 0 10px rgba(185, 131, 255, 0.2);
   border-radius: 1rem;
   backdrop-filter: blur(5px);
+}
+
+/* Responsywne dostosowania */
+@media (max-width: 767.98px) {
+  .ranking-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .place-cell {
+    font-size: 1rem;
+  }
+  
+  .chart-card {
+    height: 250px;
+  }
 }
 </style>
