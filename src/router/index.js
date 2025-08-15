@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
 
@@ -19,7 +19,7 @@ import UserProfileView from '@/views/UserProfileView.vue'
 import TeamView from '@/views/TeamView.vue'
 import TeamDetailsView from '@/views/TeamDetailsView.vue'
 import RankingView from '@/views/RankingView.vue'
-import AdminView from '@/views/AdminView.vue' // odkomentowane
+import AdminView from '@/views/AdminView.vue'
 
 const routes = [
   {
@@ -47,13 +47,13 @@ const routes = [
         component: AdminView,
         meta: { requiresAdmin: true }
       },
-      { path: '', redirect: '/dashboard' }
+      { path: '', redirect: 'dashboard' } // redirect w hash mode
     ]
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(), // <-- hash mode dla GitHub Pages
   routes
 })
 
@@ -81,11 +81,11 @@ router.beforeEach((to, from, next) => {
           if (role === 'admin' || user.email === 'abcd@gmail.com') {
             return next()
           } else {
-            return next('/dashboard')
+            return next('/#/dashboard')
           }
         } catch (error) {
           console.error('Błąd sprawdzania roli admina:', error)
-          return next('/dashboard')
+          return next('/#/dashboard')
         }
       }
 
